@@ -17,6 +17,7 @@ public class pet extends JPanel implements MouseMotionListener{
     private long start = 0;
     public static JFrame frame = new JFrame("frame");
     public ArrayList<long[]> results = new ArrayList<long[]>();
+    public static ArrayList<int[]> buttons = new ArrayList<int[]>();
 
     public pet() throws IOException{
         setPreferredSize(new Dimension(870, 675));         //configuring panel
@@ -26,22 +27,33 @@ public class pet extends JPanel implements MouseMotionListener{
 
     public static void main(String[] args) throws IOException{
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        pet p = new pet();
         JComponent newContentPane = new pet();
-        newContentPane.setOpaque(true);
-        frame.setContentPane(newContentPane);
+        p.setOpaque(true);
+        frame.setContentPane(p);
         frame.pack();
         frame.setVisible(true);
-        frame.addMouseMotionListener(new pet());
+        frame.addMouseMotionListener(p);
         drawButtons(frame.getGraphics());
     }
 
-    public static void drawButtons(Graphics g) {
-        g.setColor(Color.BLACK);
+    public static void drawButtons(Graphics g) throws IOException {
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10;  j++) {
-                drawButton(g, i * 30 + 20, j * 30 + 20, 15);
+                buttons.add(new int[]{i * 50 + 20, j * 50 + 20, 30});
             }
         }
+
+        g.setColor(Color.BLACK);
+        for (int[] but: buttons) drawButton(g, but[0], but[1], but[2]);
+        File file = new File("buttons.txt");
+        file.createNewFile();
+        FileWriter writer = new FileWriter(file);
+        for (int[] but: buttons) {
+            writer.write(but[0] + " " + but[1] + " " + but[2] + "\n");
+        }
+        writer.flush();
+        writer.close();
     }
 
     public static void drawButton(Graphics g, int x, int y, int r){
@@ -56,7 +68,7 @@ public class pet extends JPanel implements MouseMotionListener{
         int y = e.getY();
         results.add(new long[]{x, y, t});
 
-        if (t > 10000) {
+        if (t > 5000) {
             try{
                 write();
                 System.out.println("Results written");
@@ -68,7 +80,7 @@ public class pet extends JPanel implements MouseMotionListener{
     }
 
     private void write() throws IOException{
-            File file = new File("records.txt");
+            File file = new File("mouse.txt");
             file.createNewFile();
             FileWriter writer = new FileWriter(file);
             for (long[] tuple: results) {
