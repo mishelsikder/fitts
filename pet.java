@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.io.IOException;
 import javax.swing.*;
 import java.util.ArrayList;
@@ -11,18 +12,16 @@ import java.io.File;
 import java.io.FileWriter;
 
 
-public class pet extends JPanel implements MouseListener{
+public class pet extends JPanel implements MouseMotionListener{
 
     private long start = 0;
-    public int count = 0;
-    private int clicked = 0;
     public static JFrame frame = new JFrame("frame");
     public ArrayList<long[]> results = new ArrayList<long[]>();
 
     public pet() throws IOException{
-    setPreferredSize(new Dimension(870, 675));         //configuring panel
-    addMouseListener(this);
-    start = System.currentTimeMillis();
+        setPreferredSize(new Dimension(870, 675));         //configuring panel
+        addMouseMotionListener(this);
+        start = System.currentTimeMillis();
     }
 
     public static void main(String[] args) throws IOException{
@@ -32,47 +31,36 @@ public class pet extends JPanel implements MouseListener{
         frame.setContentPane(newContentPane);
         frame.pack();
         frame.setVisible(true);
-        frame.addMouseListener(new pet());
+        frame.addMouseMotionListener(new pet());
+        drawButtons(frame.getGraphics());
     }
-    public void paintRectangleAtPoint(Graphics g, int x, int y, int r){
-    g.setColor(Color.BLACK);
-    //g.(x, y, 100,100);
-    //x = x-(r/2);
-    //y = y-(r/2);
-    g.drawOval(x-r,y-r,r,r);
+
+    public static void drawButtons(Graphics g) {
+        g.setColor(Color.BLACK);
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10;  j++) {
+                drawButton(g, i * 30 + 20, j * 30 + 20, 15);
+            }
+        }
     }
-    public void paintStuff(Graphics g, int x, int y, int r){
-    g.setColor(Color.BLACK);
-    //x = x-(r/2);
-    //y = y-(r/2);
-    g.drawOval(x -r,y - r,r,r);
+
+    public static void drawButton(Graphics g, int x, int y, int r){
+        g.setColor(Color.BLACK);
+        g.drawOval(x-r,y-r,r,r);
     }
 
     @Override
-    //long start = System.currentTimeMillis();
-    public void mouseClicked(MouseEvent e) {
-        //paintStuff(frame.getGraphics(),e.getX(), e.getY(), 80);
-                
-        for (int i=0; i<4; i++){
-                paintStuff(frame.getGraphics(),100+ count, 150, 80);
-                count += 120;		
-        }
-        //counter.countPrimes(1000000);
+    public void mouseMoved(MouseEvent e) {
         long t = System.currentTimeMillis() - start;
         int x = e.getX();
         int y = e.getY();
-        clicked++;
-        
-        System.out.println(e.getX());
-        System.out.println(e.getY());
-
         results.add(new long[]{x, y, t});
 
-        if (clicked == 5) {
+        if (t > 10000) {
             try{
                 write();
                 System.out.println("Results written");
-                 System.exit(0);
+                System.exit(0);
             }catch(IOException ex){
 
             }
@@ -91,22 +79,7 @@ public class pet extends JPanel implements MouseListener{
     }
 
     @Override
-    public void mousePressed(MouseEvent e) {
-    // TODO Auto-generated method stub
-    
-    }
-    @Override
-    public void mouseReleased(MouseEvent e) {
-    // TODO Auto-generated method stub
-    
-    }
-    @Override
-    public void mouseEntered(MouseEvent e) {
-    // TODO Auto-generated method stub
-    
-    }
-    @Override
-    public void mouseExited(MouseEvent e) {
+    public void mouseDragged(MouseEvent e) {
     // TODO Auto-generated method stub
     
     }
