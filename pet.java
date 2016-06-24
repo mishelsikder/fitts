@@ -26,17 +26,22 @@ public class pet {
 
         while (true) {
 
-            if (StdDraw.mouseClicked()) {
+            if (StdDraw.mousePressed()) {
                 start((int)(StdDraw.mouseX()), 
                       (int)(StdDraw.mouseY()));
                 break;
             }
         }
 
+        long last = System.currentTimeMillis();
         while (true) {
-            results.add(new long[]{(long)StdDraw.mouseX(), 
-                                    (long)StdDraw.mouseY(),
-                                    System.currentTimeMillis() - T});
+            long t =  System.currentTimeMillis();
+            if (t != last) {
+                results.add(new long[]{(long)StdDraw.mouseX(), 
+                                        (long)StdDraw.mouseY(),
+                                        t - T});
+            }
+            last = t;
             if (StdDraw.mousePressed()) {
                 write();
                 System.exit(0);
@@ -59,7 +64,7 @@ public class pet {
         for (int i=0; i<10; i++){
         	Random rand = new Random();
         	r = rand.nextInt(dx / 2 - 15) + 15;
-        	int[] but = new int[]{i * dx + offset, y, r};
+        	int[] but = new int[]{i * dx + offset, 100, r};
 
         	buttons.add(but);
         	writer.write(but[0] + " " + but[1] + " " + but[2] + "\n");
