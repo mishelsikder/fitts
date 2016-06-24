@@ -1,10 +1,5 @@
 
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.io.IOException;
 
 import javax.swing.*;
@@ -15,27 +10,43 @@ import java.io.File;
 import java.io.FileWriter;
 
 
-public class pet extends JPanel implements MouseMotionListener, MouseListener{
+public class pet {
 
-    private long start = 0;
-    //public static JFrame frame = new JFrame("frame");
+
+    
+    private long T = 0;
     public ArrayList<long[]> results = new ArrayList<long[]>();
     public ArrayList<int[]> buttons = new ArrayList<int[]>();
     
     private boolean started = false;
 
     public pet() throws IOException{
-        //setPreferredSize(new Dimension(870, 675));         //configuring panel
-        addMouseMotionListener(this);
-
         StdDraw.setXscale(0, 800);
         StdDraw.setYscale(0, 800);
 
+        while (true) {
+
+            if (StdDraw.mouseClicked()) {
+                start((int)(StdDraw.mouseX()), 
+                      (int)(StdDraw.mouseY()));
+                break;
+            }
+        }
+
+        while (true) {
+            results.add(new long[]{(long)StdDraw.mouseX(), 
+                                    (long)StdDraw.mouseY(),
+                                    System.currentTimeMillis() - T});
+            if (StdDraw.mousePressed()) {
+                write();
+                System.exit(0);
+            }
+        }
     }
     
     public void start(int x, int y) throws IOException{
     
-        start = System.currentTimeMillis();
+        T = System.currentTimeMillis();
         File file = new File("buttons.txt");
         
         file.createNewFile();
@@ -76,24 +87,6 @@ public class pet extends JPanel implements MouseMotionListener, MouseListener{
      }
         
 
-    @Override
-    public void mouseMoved(MouseEvent e) {
-        long t = System.currentTimeMillis() - start;
-        int x = e.getX();
-        int y = e.getY();
-        results.add(new long[]{x, y, t});
-
-        if (t > 5000) {
-            try{
-                write();
-                System.out.println("Results written");
-                System.exit(0);
-            }catch(IOException ex){
-
-            }
-        }
-    }
-
     private void write() throws IOException{
             File file = new File("mouse.txt");
             file.createNewFile();
@@ -103,39 +96,5 @@ public class pet extends JPanel implements MouseMotionListener, MouseListener{
             }
             writer.flush();
             writer.close();
-    }
-
-    @Override
-    public void mouseDragged(MouseEvent e) {
-    // TODO Auto-generated method stub
-    
-    }
-    
-    public void	mouseClicked(MouseEvent e) {
-    	if (!started){
-    		try{
-    			start(e.getX(), e.getY());
-    		//start(0, 0);
-    		} catch (IOException ex) {}
-    		started = true;
-    	} else {
-    		try {
-    			write();
-    			System.out.println("Results written");
-    			System.exit(0);
-    		} catch(IOException ex) {
-    		}
-    	
-    	}
-    	
-    	
-    }
-    public void	mouseEntered(MouseEvent e){
-}
-    public void	mouseExited(MouseEvent e){
-    }
-    public void	mousePressed(MouseEvent e){
-    }
-    public void	mouseReleased(MouseEvent e){
     }
 }
