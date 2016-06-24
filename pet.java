@@ -6,60 +6,75 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.io.IOException;
+
 import javax.swing.*;
+
 import java.util.ArrayList;
+import java.util.Random;
 import java.io.File;
 import java.io.FileWriter;
 
 
-public class pet extends JPanel implements MouseMotionListener{
+public class pet extends JPanel implements MouseMotionListener, MouseListener{
 
     private long start = 0;
-    public static JFrame frame = new JFrame("frame");
+    //public static JFrame frame = new JFrame("frame");
     public ArrayList<long[]> results = new ArrayList<long[]>();
-    public static ArrayList<int[]> buttons = new ArrayList<int[]>();
+    public ArrayList<int[]> buttons = new ArrayList<int[]>();
+    
+    private boolean started = false;
 
     public pet() throws IOException{
-        setPreferredSize(new Dimension(870, 675));         //configuring panel
+        //setPreferredSize(new Dimension(870, 675));         //configuring panel
         addMouseMotionListener(this);
+
+        StdDraw.setXscale(0, 800);
+        StdDraw.setYscale(0, 800);
+
+    }
+    
+    public void start(int x, int y) throws IOException{
+    
         start = System.currentTimeMillis();
-    }
-
-    public static void main(String[] args) throws IOException{
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        pet p = new pet();
-        JComponent newContentPane = new pet();
-        p.setOpaque(true);
-        frame.setContentPane(p);
-        frame.pack();
-        frame.setVisible(true);
-        frame.addMouseMotionListener(p);
-        drawButtons(frame.getGraphics());
-    }
-
-    public static void drawButtons(Graphics g) throws IOException {
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10;  j++) {
-                buttons.add(new int[]{i * 50 + 20, j * 50 + 20, 30});
-            }
-        }
-
-        g.setColor(Color.BLACK);
-        for (int[] but: buttons) drawButton(g, but[0], but[1], but[2]);
         File file = new File("buttons.txt");
+        
         file.createNewFile();
         FileWriter writer = new FileWriter(file);
-        for (int[] but: buttons) {
-            writer.write(but[0] + " " + but[1] + " " + but[2] + "\n");
+        
+        int r = 0;
+        int offset = 70 + x;
+        int dx = 70;
+
+        for (int i=0; i<10; i++){
+        	Random rand = new Random();
+        	r = rand.nextInt(dx / 2 - 15) + 15;
+        	int[] but = new int[]{i * dx + offset, y, r};
+
+        	buttons.add(but);
+        	writer.write(but[0] + " " + but[1] + " " + but[2] + "\n");
         }
+        
         writer.flush();
         writer.close();
+        
+
+        drawButtons();	
+    }
+    
+
+    public static void main(String[] args) throws IOException{
+        pet p = new pet();
     }
 
-    public static void drawButton(Graphics g, int x, int y, int r){
-        g.setColor(Color.BLACK);
-        g.drawOval(x-r,y-r,r,r);
+    public void drawButton (int x, int y, int r) {
+        StdDraw.setPenColor(Color.BLACK);
+        StdDraw.circle(x, 50, r);
     }
+     public void drawButtons() {
+        for (int[] but: buttons) 
+        	drawButton(but[0], but[1], but[2]);
+     }
+        
 
     @Override
     public void mouseMoved(MouseEvent e) {
@@ -94,5 +109,33 @@ public class pet extends JPanel implements MouseMotionListener{
     public void mouseDragged(MouseEvent e) {
     // TODO Auto-generated method stub
     
+    }
+    
+    public void	mouseClicked(MouseEvent e) {
+    	if (!started){
+    		try{
+    			start(e.getX(), e.getY());
+    		//start(0, 0);
+    		} catch (IOException ex) {}
+    		started = true;
+    	} else {
+    		try {
+    			write();
+    			System.out.println("Results written");
+    			System.exit(0);
+    		} catch(IOException ex) {
+    		}
+    	
+    	}
+    	
+    	
+    }
+    public void	mouseEntered(MouseEvent e){
+}
+    public void	mouseExited(MouseEvent e){
+    }
+    public void	mousePressed(MouseEvent e){
+    }
+    public void	mouseReleased(MouseEvent e){
     }
 }
