@@ -49,13 +49,15 @@ public class Analyze  {
 	public static void compute() {
 		int i = 0;
 		for (int[] pos: cords) {
-			System.out.print(pos[2] + " ");
 			for (int[] but: buttons) {
-				double v = compV(i++, 1);
+				double v = compV(i, 10);
+                                if (v == 0) continue;
 				double[] res = eq(pos[0], pos[1], but[0], but[1], but[2], v);
 				System.out.print(res[0] + " " + res[1] + " ");
+                                //System.out.println(res[1]);
 			}
-			System.out.println();
+                        i++;
+			//System.out.println();
 		}
 	}
 
