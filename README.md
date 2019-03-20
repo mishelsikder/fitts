@@ -11,5 +11,5 @@ the camera moude.
 
 
 For more information:
-http://www.cameramouse.org/
+http://www.cameramouse.org/,
 https://www.yorku.ca/mack/hhci2018.html
