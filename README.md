@@ -10,6 +10,8 @@ A statistical analysis was condcted using Python, which proved that this procedu
 the camera moude.
 
 
-For more information:
-http://www.cameramouse.org/,
+For more information on the camera mouse:
+http://www.cameramouse.org/
+
+For more information on Fitts' Law:
 https://www.yorku.ca/mack/hhci2018.html
